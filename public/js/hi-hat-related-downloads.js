@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
             var frame = wp.media({
                 title : imageWidget.frame_title,
                 multiple : false,
-                library : { type : 'application/pdf, application/doc' },
+                library : { type : 'application/pdf, application/msword' },
                 button : { text : imageWidget.button_title }
             });
 

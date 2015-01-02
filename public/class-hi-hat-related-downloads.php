@@ -364,7 +364,8 @@ class Hi_Hat_Related_Downloads {
 		  ),
 		  'public' => true,
 		  'has_archive' => true,
-		  'supports' => array('title', 'thumbnail')
+		  // 'supports' => array('title', 'thumbnail')
+		  'supports' => array('title')
 		)
 		);
 
