@@ -36,7 +36,10 @@ jQuery(document).ready(function($){
 
 
             $('#hihat-attachment-id').val(attachment.id);
-            $('#hihat-attachment-url').val(attachment.url);
+            $('.hihat-attachment-title').val(attachment.title);
+            $('.hihat-attachment-title').html(attachment.title);
+            $('.hihat-attachment-url').val(attachment.url);
+            $('.hihat-attachment-url').html(attachment.url);
 
         },
 

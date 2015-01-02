@@ -396,14 +396,23 @@ class Hi_Hat_Related_Downloads {
 
     	global $post;
     	$attachment_id = get_post_meta($post->ID, 'hihat-attachment-id', true);
+    	$attachment_title = get_post_meta($post->ID, 'hihat-attachment-title', true);
     	$attachment_url = get_post_meta($post->ID, 'hihat-attachment-url', true);
+
     ?>
 		<div class="uploader">
 		<p>
-		<input type="submit" class="button" name="hihat-upload-button" id="hihat-upload-button" value="<?php _e('Select an Image', 'hi-hat-ad-widget'); ?>" onclick="imageWidget.uploader( '<?php echo $this->id; ?>' ); return false;" />
+			<strong>Current file: </strong><br />
+			Title: <span class="hihat-attachment-title"><?php echo ($attachment_title != '' ? $attachment_title : 'Not yet set'); ?></span><br />
+			URL: <span class="hihat-attachment-url"><?php echo ($attachment_url != '' ? $attachment_url : 'Not yet set'); ?></span>
 		</p>
-		<input type="text" id="hihat-attachment-id" name="hihat-attachment-id" value="<?php echo $attachment_id; ?>" />
-		<input type="text" id="hihat-attachment-url" name="hihat-attachment-url" value="<?php echo $attachment_url; ?>" />
+
+		<p>
+		<input type="submit" class="button" name="hihat-upload-button" id="hihat-upload-button" value="<?php _e('Select a File', 'hi-hat-ad-widget'); ?>" onclick="imageWidget.uploader( '<?php echo $this->id; ?>' ); return false;" />
+		</p>
+		<input type="hidden" id="hihat-attachment-id" name="hihat-attachment-id" value="<?php echo $attachment_id; ?>" />
+		<input type="hidden" id="hihat-attachment-title" name="hihat-attachment-title" class="hihat-attachment-title" value="<?php echo $attachment_title; ?>" />
+		<input type="hidden" id="hihat-attachment-url" name="hihat-attachment-url" class="hihat-attachment-url" value="<?php echo $attachment_url; ?>" />
 		</div>
 
 	<?php
@@ -415,7 +424,9 @@ class Hi_Hat_Related_Downloads {
 		global $post;
 
 		update_post_meta($post->ID, "hihat-attachment-id", $_POST["hihat-attachment-id"]);
+		update_post_meta($post->ID, "hihat-attachment-title", $_POST["hihat-attachment-title"]);
 		update_post_meta($post->ID, "hihat-attachment-url", $_POST["hihat-attachment-url"]);
+
 
 		// if ( ! function_exists( 'wp_handle_upload' ) ) require_once( ABSPATH . 'wp-admin/includes/file.php' );
 		// $uploadedfile = $_FILES['hihat_the_file'];
