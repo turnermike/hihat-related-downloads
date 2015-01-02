@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
             var frame = wp.media({
                 title : imageWidget.frame_title,
                 multiple : false,
-                library : { type : 'image' },
+                library : { type : 'application/pdf, application/doc' },
                 button : { text : imageWidget.button_title }
             });
 
@@ -28,25 +28,23 @@ jQuery(document).ready(function($){
         // Output Image preview and populate widget form.
         render : function( widget_id, widget_id_string, attachment ) {
 
-            // console.log('widget_id', widget_id);
-            // console.log('widget_id_string', widget_id_string);
-            // console.log('widget_id', widget_id);
+            // console.log('attachment', attachment);
 
-            console.log('attachment', attachment);
+            if(attachment){
+                $('#hihat-attachment-id').val(attachment.id);
+                $('.hihat-attachment-title').val(attachment.title);
+                $('.hihat-attachment-title').html(attachment.title);
+                $('.hihat-attachment-url').val(attachment.url);
+                $('.hihat-attachment-url').html(attachment.url);
 
-
-            $('#hihat-attachment-id').val(attachment.id);
-            $('.hihat-attachment-title').val(attachment.title);
-            $('.hihat-attachment-title').html(attachment.title);
-            $('.hihat-attachment-url').val(attachment.url);
-            $('.hihat-attachment-url').html(attachment.url);
+            }
 
         },
 
         // Update input fields if it is empty
         updateInputIfEmpty : function( widget_id_string, name, value ) {
             var field = $("#" + widget_id_string + name);
-            if ( field.val() == '' ) {
+            if ( field.val() === '' ) {
                 field.val(value);
             }
         }
