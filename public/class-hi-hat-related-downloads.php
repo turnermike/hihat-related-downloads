@@ -27,13 +27,13 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 		     if(isset($instance['post_qty'])){
 		     	$post_qty = esc_attr($instance['post_qty']);
 		     }
-		     if(isset($instance['readmore_url'])){
-		     	$readmore_url = esc_attr($instance['readmore_url']);
+		     if(isset($instance['description'])){
+		     	$description = esc_attr($instance['description']);
 		     }
 		} else {
 		     $title = '';
 		     $post_qty = '';
-		     $readmore_url = '';
+		     $description = '';
 		}
 		?>
 
@@ -41,7 +41,16 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 		<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Widget Title', 'Hi_Hat_Related_Downloads_Widget'); ?></label>
 		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
 		</p>
-		<p>This widget will display downloads using the 'Related Downloads' tag.</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('post_qty'); ?>"><?php _e('Post Quantity', 'Hi_Hat_Related_Downloads_Widget'); ?></label>
+		<input class="widefat" id="<?php echo $this->get_field_id('post_qty'); ?>" name="<?php echo $this->get_field_name('post_qty'); ?>" type="text" value="<?php echo $post_qty; ?>" />
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id('description'); ?>"><?php _e(' Description', 'Hi_Hat_Related_Downloads_Widget'); ?></label>
+		<input class="widefat" id="<?php echo $this->get_field_id('description'); ?>" name="<?php echo $this->get_field_name('description'); ?>" type="text" value="<?php echo $description; ?>" />
+		</p>
+
+		<p>This widget will display downloads added to the Related Downloads Content Type by using the Related Downloads Tags to establish a relation ship. Post Quantity and Description fields are not required. </p>
 
 		<?php
 	}
@@ -52,6 +61,8 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 		$instance = $old_instance;
 		// Fields
 		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['post_qty'] = strip_tags($new_instance['post_qty']);
+		$instance['description'] = strip_tags($new_instance['description']);
 		return $instance;
 
 	}
@@ -65,18 +76,22 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 
 		extract( $args );
 
+		$output = '';
+		// post quantity default is 4
+		$post_qty = ($instance['post_qty'] == '' ? 4 : $instance['post_qty']);
+
 		//get the terms
-		$terms = wp_get_object_terms( $post->ID, array('download-tag'), array('fields' => 'ids') );
+		$terms = wp_get_object_terms( $post->ID, array('related_download_tag'), array('fields' => 'ids') );
 
 		$args = array(
-			'post_type'			=> 'downloads',
+			'post_type'			=> 'related_download',
 			'post_status' 		=> 'publish',
-			'posts_per_page' 	=> 9,
-			'orderby'			=> 'rand',
+			'posts_per_page' 	=> $post_qty,
+			'orderby'			=> 'post_date',
 			'tax_query'			=> array(
 				'relation'			=> 'OR',
 				array(
-					'taxonomy'	=> 'download-tag',
+					'taxonomy'	=> 'related_download_tag',
 					'field' 	=> 'id',
 					'terms' 	=> $terms
 				)
@@ -99,20 +114,24 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 			if ( $title ) {
 				$output .= $before_title . $title . $after_title;
 			}
+			$description = apply_filters('widget_title', $instance['description']);
+
+			($description != '' ? $output .= wpautop($description) : $output .= '');
+
+
 
 			while($results->have_posts()) : $results->the_post();
 
 				$output .= "<li>";
 				$title = get_the_title();
-				$url = get_post_meta($post->ID, 'wpcf-downloads-the-file', true);
-				$desc = get_post_meta($post->ID, 'wpcf-downloads-file-description', true);
+				$url = get_post_meta($post->ID, 'hihat-attachment-url', true);
+				// $desc = get_post_meta($post->ID, 'hihat-file-description', true);
 				if($url && $title){
 					$output .= "<a href='$url'>$title</a>";
 				}
-				if($desc){
-					$output .= wpautop($desc);
-				}
-				// $output .= $url;
+				// if($desc){
+				// 	$output .= wpautop($desc);
+				// }
 				$output .= "</li>";
 
 			endwhile;
