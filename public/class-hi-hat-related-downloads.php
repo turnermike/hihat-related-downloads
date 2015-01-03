@@ -70,77 +70,79 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 	//widget display
 	function widget($args, $instance){
 
-		wp_reset_postdata();
+		echo Hi_Hat_Related_Downloads::outputView(NULL, $instance, $args);
 
-		global $post;
+		// wp_reset_postdata();
 
-		extract( $args );
+		// global $post;
 
-		$output = '';
-		// post quantity default is 4
-		$post_qty = ($instance['post_qty'] == '' ? 4 : $instance['post_qty']);
+		// extract( $args );
 
-		//get the terms
-		$terms = wp_get_object_terms( $post->ID, array('related_download_tag'), array('fields' => 'ids') );
+		// $output = '';
+		// // post quantity default is 4
+		// $post_qty = ($instance['post_qty'] == '' ? 4 : $instance['post_qty']);
 
-		$args = array(
-			'post_type'			=> 'related_download',
-			'post_status' 		=> 'publish',
-			'posts_per_page' 	=> $post_qty,
-			'orderby'			=> 'post_date',
-			'tax_query'			=> array(
-				'relation'			=> 'OR',
-				array(
-					'taxonomy'	=> 'related_download_tag',
-					'field' 	=> 'id',
-					'terms' 	=> $terms
-				)
-			),
-			'post__not_in' => array($post->ID)
-		);
-		$results = new WP_Query($args);
+		// //get the terms
+		// $terms = wp_get_object_terms( $post->ID, array('related_download_tag'), array('fields' => 'ids') );
 
-		// print('<pre>');
-		// print_r($results->posts);
-		// print('</pre>');
+		// $args = array(
+		// 	'post_type'			=> 'related_download',
+		// 	'post_status' 		=> 'publish',
+		// 	'posts_per_page' 	=> $post_qty,
+		// 	'orderby'			=> 'post_date',
+		// 	'tax_query'			=> array(
+		// 		'relation'			=> 'OR',
+		// 		array(
+		// 			'taxonomy'	=> 'related_download_tag',
+		// 			'field' 	=> 'id',
+		// 			'terms' 	=> $terms
+		// 		)
+		// 	),
+		// 	'post__not_in' => array($post->ID)
+		// );
+		// $results = new WP_Query($args);
 
-		if($results->have_posts()){
+		// // print('<pre>');
+		// // print_r($results->posts);
+		// // print('</pre>');
 
-			$output = $before_widget;
-			$output .= "<ul>";
-			// get the title
-			$title = apply_filters('widget_title', $instance['title']);
-			// Check if title is set
-			if ( $title ) {
-				$output .= $before_title . $title . $after_title;
-			}
-			$description = apply_filters('widget_title', $instance['description']);
+		// if($results->have_posts()){
 
-			($description != '' ? $output .= wpautop($description) : $output .= '');
+		// 	$output = $before_widget;
+		// 	$output .= "<ul>";
+		// 	// get the title
+		// 	$title = apply_filters('widget_title', $instance['title']);
+		// 	// Check if title is set
+		// 	if ( $title ) {
+		// 		$output .= $before_title . $title . $after_title;
+		// 	}
+		// 	$description = apply_filters('widget_title', $instance['description']);
+
+		// 	($description != '' ? $output .= wpautop($description) : $output .= '');
 
 
 
-			while($results->have_posts()) : $results->the_post();
+		// 	while($results->have_posts()) : $results->the_post();
 
-				$output .= "<li>";
-				$title = get_the_title();
-				$url = get_post_meta($post->ID, 'hihat-attachment-url', true);
-				// $desc = get_post_meta($post->ID, 'hihat-file-description', true);
-				if($url && $title){
-					$output .= "<a href='$url'>$title</a>";
-				}
-				// if($desc){
-				// 	$output .= wpautop($desc);
-				// }
-				$output .= "</li>";
+		// 		$output .= "<li>";
+		// 		$title = get_the_title();
+		// 		$url = get_post_meta($post->ID, 'hihat-attachment-url', true);
+		// 		// $desc = get_post_meta($post->ID, 'hihat-file-description', true);
+		// 		if($url && $title){
+		// 			$output .= "<a href='$url'>$title</a>";
+		// 		}
+		// 		// if($desc){
+		// 		// 	$output .= wpautop($desc);
+		// 		// }
+		// 		$output .= "</li>";
 
-			endwhile;
+		// 	endwhile;
 
-			$output .= "</ul>";
-			$output .= $after_widget;
-		}
+		// 	$output .= "</ul>";
+		// 	$output .= $after_widget;
+		// }
 
-		echo $output;
+		// echo $output;
 
 	}
 
@@ -206,14 +208,21 @@ class Hi_Hat_Related_Downloads {
 	 */
 	private function __construct() {
 
-		// Load plugin text domain
+		// load plugin text domain
 		add_action( 'init', array( $this, 'initialize' ) );
 
+		// enqueue scripts and styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
+		// add the 'download' metabox
 		add_action( 'add_meta_boxes', array( $this, 'hihat_add_meta_boxes' ) );
+
+		// save post action
 		add_action( 'save_post', array($this, 'hihat_save_meta_boxes' ) );
+
+		// shortcodes
+		add_shortcode( 'hihat_related_downloads', array( $this, 'hihat_related_downloads_handler' ) );
 
 	}
 
@@ -447,64 +456,18 @@ class Hi_Hat_Related_Downloads {
 		update_post_meta($post->ID, "hihat-attachment-title", $_POST["hihat-attachment-title"]);
 		update_post_meta($post->ID, "hihat-attachment-url", $_POST["hihat-attachment-url"]);
 
-
-		// if ( ! function_exists( 'wp_handle_upload' ) ) require_once( ABSPATH . 'wp-admin/includes/file.php' );
-		// $uploadedfile = $_FILES['hihat_the_file'];
-		// $upload_overrides = array( 'test_form' => false );
-		// $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
-		// if ( $movefile ) {
-		//     echo "File is valid, and was successfully uploaded.\n";
-		//     var_dump( $movefile);
-		// } else {
-		//     echo "Possible file upload attack!\n";
-		// }
-
-
-
-
-
-
-		// update_post_meta($post->ID, "hihat_the_file", $_POST["hihat_the_file"]);
-
-		// if(!empty($_FILES['hihat_the_file']['name'])){ //New upload
-
-		// 	require_once( ABSPATH . 'wp-admin/includes/file.php' );
-		// 	$override['action'] = 'editpost';
-
-		// 	$uploaded_file = wp_handle_upload($_FILES['hihat_the_file'], $override);
-
-		// 	print('<pre>');
-		// 	print_r($uploaded_file);
-		// 	print('</pre>');
-
-		// 	$post_id = $post->ID;
-		// 	$attachment = array(
-		// 	'post_title' => $_FILES['hihat_the_file']['name'],
-		// 	'post_content' => '',
-		// 	'post_type' => 'attachment',
-		// 	'post_parent' => $post_id,
-		// 	'post_mime_type' => $_FILES['hihat_the_file']['type'],
-		// 	'guid' => $uploaded_file['url']
-		// 	);
-		// 	// Save the data
-		// 	$id = wp_insert_attachment( $attachment,$_FILES['hihat_the_file'][ 'file' ], $post_id );
-		// 	wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $_FILES['hihat_the_file']['file'] ) );
-
-		// 	update_post_meta($post->ID, "hihat_the_file", $uploaded_file['url']);
-
-		// }
 	}
 
-    function user_can_save( $post_id, $nonce ) {
+    // function user_can_save( $post_id, $nonce ) {
 
-        $is_autosave = wp_is_post_autosave( $post_id );
-        $is_revision = wp_is_post_revision( $post_id );
-        $is_valid_nonce = ( isset( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], plugin_basename( __FILE__ ) ) );
+    //     $is_autosave = wp_is_post_autosave( $post_id );
+    //     $is_revision = wp_is_post_revision( $post_id );
+    //     $is_valid_nonce = ( isset( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], plugin_basename( __FILE__ ) ) );
 
-        // Return true if the user is able to save; otherwise, false.
-        return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
+    //     // Return true if the user is able to save; otherwise, false.
+    //     return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
 
-    } // end user_can_save
+    // } // end user_can_save
 
 	/**
 	 * Register and enqueue public-facing style sheet.
@@ -532,5 +495,99 @@ class Hi_Hat_Related_Downloads {
 		) );
 
 	}
+
+    public function hihat_related_downloads_handler($attributes) {
+
+        //get optional attributes and assign default values if not present
+        extract( shortcode_atts( array(
+            'post_qty' => 4
+        ), $attributes ) );
+
+        return self::outputView($post_qty, NULL, NULL);
+
+
+    }
+
+    public static function outputView($post_qty=4, $instance, $args){
+
+		wp_reset_postdata();
+
+		global $post;
+
+		if(isset($args)) extract($args);
+
+		$output = '';
+
+		// if this function is called via shortcode, the $post_qty is passed
+		// otherwise it's null and we have to retreive the qty from the $instance
+		if($post_qty == NULL){
+			$post_qty = $instance['post_qty'];
+		}
+
+		//get the terms
+		$terms = wp_get_object_terms( $post->ID, array('related_download_tag'), array('fields' => 'ids') );
+
+		$args = array(
+			'post_type'			=> 'related_download',
+			'post_status' 		=> 'publish',
+			'posts_per_page' 	=> $post_qty,
+			'orderby'			=> 'post_date',
+			'tax_query'			=> array(
+				'relation'			=> 'OR',
+				array(
+					'taxonomy'	=> 'related_download_tag',
+					'field' 	=> 'id',
+					'terms' 	=> $terms
+				)
+			),
+			'post__not_in' => array($post->ID)
+		);
+		$results = new WP_Query($args);
+
+		// print('<pre>');
+		// print_r($results->posts);
+		// print('</pre>');
+
+		if($results->have_posts()){
+
+			(isset($before_widget) ? $output .= $before_widget : $output .= '');
+			$output .= "<ul>";
+
+			if(isset($instance)){
+				// it's the widget, do widget specific stuff here
+
+				// get the title
+				$title = apply_filters('widget_title', $instance['title']);
+				($title != '' ? $output .= '<li>' . $before_title . $title . $after_title . '</li>' : $output .= '' );
+
+				// get the description
+				$description = apply_filters('widget_title', $instance['description']);
+				($description != '' ? $output .= '<li>' . wpautop($description) . '</li>' : $output .= '');
+
+			}
+
+			while($results->have_posts()) : $results->the_post();
+
+				$output .= "<li>";
+				$title = get_the_title();
+				$url = get_post_meta($post->ID, 'hihat-attachment-url', true);
+				// $desc = get_post_meta($post->ID, 'hihat-file-description', true);
+				if($url && $title){
+					$output .= "<a href='$url'>$title</a>";
+				}
+				// if($desc){
+				// 	$output .= wpautop($desc);
+				// }
+				$output .= "</li>";
+
+			endwhile;
+
+			$output .= "</ul>";
+			(isset($after_widget) ? $output .= $after_widget : $output .= '');
+		}
+
+		return $output;
+    }
+
 
 }

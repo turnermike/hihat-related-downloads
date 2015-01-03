@@ -10,19 +10,28 @@ To establish a relationship between this download and your existing Posts, locat
 
 Now that one of your new Related Download Posts have been tagged, and one of your existing Posts have been tagged with the same tag (keyword), you should now see your new Related Download listed in the sidebar where your widget has been added.
 
+### Widget
+
+Simply drag and drop the widget to your sidebar and configure options.
+
+### Shortcode
+
+To include the Related Downloads in a Page or Post, please use the following shortcode. Post Quantity is the only available option at this time.
+
+    [hihat_related_downloads post_qty="2"]
+
 Notes:
 
  + Supports PDF and MS Word Documents
  + No thumbnail support
- + Widget only
+ + Widget and Shortcode available
  + Default Post Quantity is 4
 
 ## To-do
 
 1. Add support for thumbnails.
-2. Add shortcode support.
-3. Verify file type restrictions
-5. Add user defined order by options
+2. Verify file type restrictions
+3. Add user defined order-by options
 
 ---
 Developed by [Hi-hat Consulting](http://hi-hatconsulting.com)
