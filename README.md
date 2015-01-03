@@ -4,7 +4,7 @@ This Wordpress plugin will allow you to display related downloads in your widget
 
 ## How it Works
 
-A new Post Type named "Related Downloads" will be available from your Dashboard's main menu. Here you should add a title, and select the file from your Meida Library or upload a new file. After the file has been added, tag this new Post using the "Related Download Tags" metabox.
+A new Post Type named Related Downloads will be available from your Dashboard's main menu. Here you should add a title, and select the file from your Meida Library or upload a new file. After the file has been added, tag this new Post using the "Related Download Tags" metabox.
 
 To establish a relationship between this download and your existing Posts, locate the Post in your Dashboard and tag that Post with the same tag used previously.
 
@@ -20,7 +20,7 @@ To include the Related Downloads in a Page or Post, please use the following sho
 
     [hihat_related_downloads post_qty="2"]
 
-Notes:
+## Notes:
 
  + Supports PDF and MS Word Documents
  + No thumbnail support
