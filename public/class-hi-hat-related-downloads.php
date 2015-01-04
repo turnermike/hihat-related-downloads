@@ -70,7 +70,7 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 	//widget display
 	function widget($args, $instance){
 
-		echo Hi_Hat_Related_Downloads::outputView(NULL, $instance, $args);
+		echo Hi_Hat_Related_Downloads::output_view(NULL, $instance, $args);
 	}
 
 }
@@ -400,12 +400,12 @@ class Hi_Hat_Related_Downloads {
             'post_qty' => 4
         ), $attributes ) );
 
-        return self::outputView($post_qty, NULL, NULL);
+        return self::output_view($post_qty, NULL, NULL);
 
 
     }
 
-    public static function outputView($post_qty=4, $instance, $args){
+    public static function output_view($post_qty=4, $instance, $args){
 
 		wp_reset_postdata();
 
