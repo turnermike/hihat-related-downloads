@@ -71,79 +71,6 @@ class Hi_Hat_Related_Downloads_Widget extends WP_Widget{
 	function widget($args, $instance){
 
 		echo Hi_Hat_Related_Downloads::outputView(NULL, $instance, $args);
-
-		// wp_reset_postdata();
-
-		// global $post;
-
-		// extract( $args );
-
-		// $output = '';
-		// // post quantity default is 4
-		// $post_qty = ($instance['post_qty'] == '' ? 4 : $instance['post_qty']);
-
-		// //get the terms
-		// $terms = wp_get_object_terms( $post->ID, array('related_download_tag'), array('fields' => 'ids') );
-
-		// $args = array(
-		// 	'post_type'			=> 'related_download',
-		// 	'post_status' 		=> 'publish',
-		// 	'posts_per_page' 	=> $post_qty,
-		// 	'orderby'			=> 'post_date',
-		// 	'tax_query'			=> array(
-		// 		'relation'			=> 'OR',
-		// 		array(
-		// 			'taxonomy'	=> 'related_download_tag',
-		// 			'field' 	=> 'id',
-		// 			'terms' 	=> $terms
-		// 		)
-		// 	),
-		// 	'post__not_in' => array($post->ID)
-		// );
-		// $results = new WP_Query($args);
-
-		// // print('<pre>');
-		// // print_r($results->posts);
-		// // print('</pre>');
-
-		// if($results->have_posts()){
-
-		// 	$output = $before_widget;
-		// 	$output .= "<ul>";
-		// 	// get the title
-		// 	$title = apply_filters('widget_title', $instance['title']);
-		// 	// Check if title is set
-		// 	if ( $title ) {
-		// 		$output .= $before_title . $title . $after_title;
-		// 	}
-		// 	$description = apply_filters('widget_title', $instance['description']);
-
-		// 	($description != '' ? $output .= wpautop($description) : $output .= '');
-
-
-
-		// 	while($results->have_posts()) : $results->the_post();
-
-		// 		$output .= "<li>";
-		// 		$title = get_the_title();
-		// 		$url = get_post_meta($post->ID, 'hihat-attachment-url', true);
-		// 		// $desc = get_post_meta($post->ID, 'hihat-file-description', true);
-		// 		if($url && $title){
-		// 			$output .= "<a href='$url'>$title</a>";
-		// 		}
-		// 		// if($desc){
-		// 		// 	$output .= wpautop($desc);
-		// 		// }
-		// 		$output .= "</li>";
-
-		// 	endwhile;
-
-		// 	$output .= "</ul>";
-		// 	$output .= $after_widget;
-		// }
-
-		// echo $output;
-
 	}
 
 }
@@ -154,14 +81,6 @@ add_action('widgets_init', create_function('', 'return register_widget("Hi_Hat_R
 
 
 /**
- * Plugin class. This class should ideally be used to work with the
- * public-facing side of the WordPress site.
- *
- * If you're interested in introducing administrative or dashboard
- * functionality, then refer to `class-plugin-name-admin.php`
- *
- * @TODO: Rename this class to a proper name for your plugin.
- *
  * @package Hi_Hat_Related_Downloads
  * @author  Your Name <email@example.com>
  */
@@ -451,38 +370,16 @@ class Hi_Hat_Related_Downloads {
 	public function hihat_save_meta_boxes(){
 
 		global $post;
-
 		update_post_meta($post->ID, "hihat-attachment-id", $_POST["hihat-attachment-id"]);
 		update_post_meta($post->ID, "hihat-attachment-title", $_POST["hihat-attachment-title"]);
 		update_post_meta($post->ID, "hihat-attachment-url", $_POST["hihat-attachment-url"]);
 
 	}
 
-    // function user_can_save( $post_id, $nonce ) {
-
-    //     $is_autosave = wp_is_post_autosave( $post_id );
-    //     $is_revision = wp_is_post_revision( $post_id );
-    //     $is_valid_nonce = ( isset( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], plugin_basename( __FILE__ ) ) );
-
-    //     // Return true if the user is able to save; otherwise, false.
-    //     return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
-
-    // } // end user_can_save
-
-	/**
-	 * Register and enqueue public-facing style sheet.
-	 *
-	 * @since    1.0.0
-	 */
 	public function enqueue_styles() {
 		wp_enqueue_style('thickbox');
 	}
 
-	/**
-	 * Register and enqueues public-facing JavaScript files.
-	 *
-	 * @since    1.0.0
-	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script('media-upload');
 		wp_enqueue_script('thickbox');

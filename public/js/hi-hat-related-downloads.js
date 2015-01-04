@@ -1,9 +1,9 @@
-jQuery(document).ready(function($){
+jQuery(document).ready(function($) {
 
     imageWidget = {
 
         // Call this from the upload button to initiate the upload frame.
-        uploader : function( widget_id, widget_id_string ) {
+        uploader : function(widget_id, widget_id_string) {
 
             // console.log('widget_id', widget_id);
             // console.log('widget_id_string', widget_id_string);
@@ -16,9 +16,9 @@ jQuery(document).ready(function($){
             });
 
             // Handle results from media manager.
-            frame.on('close',function( ) {
+            frame.on('close', function() {
                 var attachments = frame.state().get('selection').toJSON();
-                imageWidget.render( widget_id, widget_id_string, attachments[0] );
+                imageWidget.render(widget_id, widget_id_string, attachments[0]);
             });
 
             frame.open();
@@ -26,11 +26,12 @@ jQuery(document).ready(function($){
         },
 
         // Output Image preview and populate widget form.
-        render : function( widget_id, widget_id_string, attachment ) {
+        render : function(widget_id, widget_id_string, attachment) {
+        // render : function(widget_id, widget_id_string, attachment) {
 
             // console.log('attachment', attachment);
 
-            if(attachment){
+            if (attachment) {
                 $('#hihat-attachment-id').val(attachment.id);
                 $('.hihat-attachment-title').val(attachment.title);
                 $('.hihat-attachment-title').html(attachment.title);
@@ -42,9 +43,9 @@ jQuery(document).ready(function($){
         },
 
         // Update input fields if it is empty
-        updateInputIfEmpty : function( widget_id_string, name, value ) {
+        updateInputIfEmpty : function(widget_id_string, name, value) {
             var field = $("#" + widget_id_string + name);
-            if ( field.val() === '' ) {
+            if (field.val() === '') {
                 field.val(value);
             }
         }
